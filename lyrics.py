@@ -39,4 +39,4 @@ class Lyrics(BotPlugin):
             entities = BeautifulSoup(lyrics, convertEntities=BeautifulSoup.HTML_ENTITIES)
             return entities.renderContents()
         else:
-            print 'Lyrics not found.'
+            return 'Lyrics not found.'
