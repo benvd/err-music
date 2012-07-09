@@ -1,0 +1,6 @@
+[Core]
+Name = Lyrics
+Module = lyrics
+
+[Documentation]
+Description = Get lyrics from LyricWiki
