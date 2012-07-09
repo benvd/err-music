@@ -1,0 +1,6 @@
+[Core]
+Name = Music
+Module = music
+
+[Documentation]
+Description = Fetch lyrics, get info about artists, etc.

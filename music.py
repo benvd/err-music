@@ -6,7 +6,7 @@ import urllib
 import re
 
 
-class Lyrics(BotPlugin):
+class Music(BotPlugin):
 
     @botcmd
     def lyrics(self, mess, args):
