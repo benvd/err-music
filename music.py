@@ -22,7 +22,7 @@ class Music(BotPlugin):
         except ValueError:
             return 'usage: !lyrics artist : title'
 
-        self.send(mess.getFrom(), '/me is looking for your lyrics...' % args, message_type='groupchat')
+        self.send(mess.getFrom(), '/me is looking for your lyrics...', message_type='groupchat')
 
         artist = artist.strip().replace(' ', '_').title()
         title = title.strip().replace(' ', '_').title()
@@ -56,7 +56,7 @@ class Music(BotPlugin):
         if not args:
             return 'give me a song name dude!'
 
-        self.send(mess.getFrom(), '/me is looking for artists...' % args, message_type='groupchat')
+        self.send(mess.getFrom(), '/me is looking for artists...', message_type='groupchat')
 
         network = pylast.LastFMNetwork(api_key=API_KEY, api_secret=API_SECRET)
         ans = network.search_for_track('', args)
@@ -78,7 +78,7 @@ class Music(BotPlugin):
         if not args:
             return 'give me a name of an artist.'
 
-        self.send(mess.getFrom(), '/me is searching for to albums by...' % args, message_type='groupchat')
+        self.send(mess.getFrom(), '/me is searching for to albums by %s...' % args, message_type='groupchat')
 
         network = pylast.LastFMNetwork(api_key=API_KEY, api_secret=API_SECRET)
         artist = network.get_artist(args)
@@ -101,7 +101,7 @@ class Music(BotPlugin):
         if not args:
             return 'give me a name of an artist.'
 
-        self.send(mess.getFrom(), '/me is searching for to tracks by...' % args, message_type='groupchat')
+        self.send(mess.getFrom(), '/me is searching for to tracks by %s...' % args, message_type='groupchat')
         network = pylast.LastFMNetwork(api_key=API_KEY, api_secret=API_SECRET)
         artist = network.get_artist(args)
         if not artist:
