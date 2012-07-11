@@ -22,8 +22,7 @@ class Music(BotPlugin):
         except ValueError:
             return 'usage: !lyrics artist : title'
 
-        room = CHATROOM_PRESENCE[0]
-        self.send(room, '/me is looking for your lyrics...' % args, message_type='groupchat')
+        self.send(mess.getFrom(), '/me is looking for your lyrics...' % args, message_type='groupchat')
 
         artist = artist.strip().replace(' ', '_').title()
         title = title.strip().replace(' ', '_').title()
@@ -57,8 +56,7 @@ class Music(BotPlugin):
         if not args:
             return 'give me a song name dude!'
 
-        room = CHATROOM_PRESENCE[0]
-        self.send(room, '/me is looking for artists...' % args, message_type='groupchat')
+        self.send(mess.getFrom(), '/me is looking for artists...' % args, message_type='groupchat')
 
         network = pylast.LastFMNetwork(api_key=API_KEY, api_secret=API_SECRET)
         ans = network.search_for_track('', args)
@@ -80,8 +78,7 @@ class Music(BotPlugin):
         if not args:
             return 'give me a name of an artist.'
 
-        room = CHATROOM_PRESENCE[0]
-        self.send(room, '/me is searching for to albums by...' % args, message_type='groupchat')
+        self.send(mess.getFrom(), '/me is searching for to albums by...' % args, message_type='groupchat')
 
         network = pylast.LastFMNetwork(api_key=API_KEY, api_secret=API_SECRET)
         artist = network.get_artist(args)
@@ -104,8 +101,7 @@ class Music(BotPlugin):
         if not args:
             return 'give me a name of an artist.'
 
-        room = CHATROOM_PRESENCE[0]
-        self.send(room, '/me is searching for to tracks by...' % args, message_type='groupchat')
+        self.send(mess.getFrom(), '/me is searching for to tracks by...' % args, message_type='groupchat')
         network = pylast.LastFMNetwork(api_key=API_KEY, api_secret=API_SECRET)
         artist = network.get_artist(args)
         if not artist:
@@ -126,8 +122,7 @@ class Music(BotPlugin):
         if not args:
             return 'give me a name of something to recommend stuff by - either an artist or a track.'
 
-        room = CHATROOM_PRESENCE[0]
-        self.send(room, '/me is searching for recommendations...', message_type='groupchat')
+        self.send(mess.getFrom(), '/me is searching for recommendations...', message_type='groupchat')
 
         network = pylast.LastFMNetwork(api_key=API_KEY, api_secret=API_SECRET)
         similar = None
@@ -161,8 +156,7 @@ class Music(BotPlugin):
         if not artist or not title:
             return 'Dude, I need the name of the album and the artist who made it... artist:album'
 
-        room = CHATROOM_PRESENCE[0]
-        self.send(room, '/me is searching album info...', message_type='groupchat')
+        self.send(mess.getFrom(), '/me is searching album info...', message_type='groupchat')
 
         network = pylast.LastFMNetwork(api_key=API_KEY, api_secret=API_SECRET)
         album = network.get_album(artist, title)
