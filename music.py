@@ -1,6 +1,4 @@
 from datetime import timedelta
-import logging
-from config import CHATROOM_PRESENCE
 from errbot.botplugin import BotPlugin
 from errbot.jabberbot import botcmd
 
@@ -8,9 +6,11 @@ from BeautifulSoup import BeautifulSoup
 import urllib
 import re
 import pylast
+import gdata.youtube.service
 
 API_KEY = '094e0ec812010881ef9fece6a7d5ed2a'
 API_SECRET = '8797b1ccf8c6b9cfe5a9c7cc54719168'
+
 
 class Music(BotPlugin):
 
@@ -227,6 +227,23 @@ class Music(BotPlugin):
 
         return 'No info found for %s' % args
 
+    @botcmd
+    def youtube(self, mess, args):
+        """
+        Get the first video on YouTube that matches the query.
+        """
+        if not args:
+            return 'Usage: !youtube search_terms'
 
+        self.send(mess.getFrom(), '/me is searching YouTube...', message_type='groupchat')
 
+        service = gdata.youtube.service.YouTubeService()
 
+        query = gdata.youtube.service.YouTubeVideoQuery()
+        query.vq = args
+        query.orderby = 'relevance'
+        query.max_results = '1'
+
+        result = service.YouTubeQuery(query)
+        video = result.entry[0]
+        return '%s: %s' % (video.title.text, video.link[0].href)
