@@ -114,35 +114,57 @@ class Music(BotPlugin):
 
         return ans
 
-    @botcmd()
+
+    def get_similar_tracks(self, network, track, artist=None):
+
+        if not artist:
+            artist = ''
+        tracks = network.search_for_track(artist, track).get_next_page()
+        if tracks:
+            for t in tracks:
+                try:
+                    similar = t.get_similar()[:10]
+                    if similar:
+                        ans = u''
+                        for s in similar:
+                            ans += u'%s / %s\n' % (s.item.get_name(), s.item.get_artist().get_name())
+
+                        return ans.strip('\n')
+                except : #baaa last.fm errors...
+                    pass
+
+        return 'Could not find anything similar to \'%s\'' % track
+
+
+
+    @botcmd(split_args_with=':')
     def recommend(self, mess, args):
         """
         Get 10 similar artists or songs
+        If artist:track were supplied, will look for similar songs.
+        Else will try artists an d if none, will try songs.
         """
         if not args:
-            return 'give me a name of something to recommend stuff by - either an artist or a track.'
+            return 'give me a name of something to recommend stuff by - either an artist or a track or both- artist:track.'
 
         self.send(mess.getFrom(), '/me is searching for recommendations...', message_type='groupchat')
-
         network = pylast.LastFMNetwork(api_key=API_KEY, api_secret=API_SECRET)
-        similar = None
 
-        artist = network.get_artist(args)
-        if artist:
-            similar = artist.get_similar(limit=10)
-        else:
-            track = network.get_track('', args)
-            if track:
-                similar = track.get_similar()[:10]
+        if len(args) == 2:
+            artist = args[0]
+            track = args[1]
+            return self.get_similar_tracks(network, track, artist)
 
-        if not similar:
-            return 'Could not find any artists or tracks that match \'%s\'' % args
+        artists = network.search_for_artist(args[0]).get_next_page()
+        if artists:
+            similar = artists[0].get_similar(limit=10)
+            if similar:
+                ans = u''
+                for s in similar:
+                    ans += s.item.get_name() + u'\n'
+                return ans.strip('\n')
 
-        ans = u''
-        for s in similar:
-            ans += s.item.get_name() + u'\n'
-
-        return ans.strip('\n')
+        return self.get_similar_tracks(network, args[0])
 
 
     @botcmd(split_args_with=':')
