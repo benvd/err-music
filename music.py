@@ -1,3 +1,4 @@
+from datetime import timedelta
 import logging
 from config import CHATROOM_PRESENCE
 from errbot.botplugin import BotPlugin
@@ -59,14 +60,20 @@ class Music(BotPlugin):
         self.send(mess.getFrom(), '/me is looking for artists...', message_type='groupchat')
 
         network = pylast.LastFMNetwork(api_key=API_KEY, api_secret=API_SECRET)
-        ans = network.search_for_track('', args)
-        p = ans.get_next_page()
+        p = network.search_for_track('', args).get_next_page()
         return_val = u'Top results:\n'
         for item in p[:5]:
-            t = item.get_title()
-            n = item.get_artist().get_name()
-            return_val += u'%s by %s\n' % (t, n)
 
+            artist = item.get_artist()
+            artist_name = artist.get_name() if artist else 'Unknown'
+
+            alb = item.get_album()
+            album_name = alb.get_name() if alb else '<>'
+
+            duration = item.get_duration()
+            duration_str = str(timedelta(milliseconds=duration)) if duration else ''
+
+            return_val += u'%s %s by %s (in %s)\n' % (item.get_title(), duration_str, artist_name, album_name)
 
         return return_val.strip('\n')
 
@@ -200,6 +207,25 @@ class Music(BotPlugin):
             return 'No info found for album %s' % title
         return ans
 
+
+    @botcmd()
+    def aboutartist(self, mess, args):
+        """
+        Show artist info
+        """
+        if not args:
+            return 'Usage: !aboutartist artist_name'
+
+        self.send(mess.getFrom(), '/me is searching for artist info...', message_type='groupchat')
+
+        network = pylast.LastFMNetwork(api_key=API_KEY, api_secret=API_SECRET)
+        artist = network.search_for_artist(args).get_next_page()
+        if artist:
+            remove_html_tags = re.compile(r'<.*?>')
+            too_many_spaces = re.compile(r'  +')
+            return too_many_spaces.sub(' ', remove_html_tags.sub(' ', artist[0].get_bio_summary()))
+
+        return 'No info found for %s' % args
 
 
 
