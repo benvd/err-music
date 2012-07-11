@@ -132,7 +132,7 @@ class Music(BotPlugin):
         for s in similar:
             ans += s.item.get_name() + u'\n'
 
-        return ans
+        return ans.strip('\n')
 
 
     @botcmd(split_args_with=':')
@@ -144,7 +144,7 @@ class Music(BotPlugin):
         title = args[0] if len(args) == 1 else args[1]
 
         if not artist or not title:
-            return 'Dude, I need the name of the album and the artist who made it...'
+            return 'Dude, I need the name of the album and the artist who made it... artist:album'
 
         network = pylast.LastFMNetwork(api_key=API_KEY, api_secret=API_SECRET)
         album = network.get_album(artist, title)
